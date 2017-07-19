@@ -24,7 +24,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public class WatchMessage extends GpsdMessage implements GpsdCommandMessage
+public class WatchMessage extends GpsdCommandMessage
 {
    public static final String CLASS = "WATCH";
 

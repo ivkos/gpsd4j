@@ -28,7 +28,7 @@ import java.util.List;
 @Getter
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public class PollMessage extends GpsdMessage implements GpsdCommandMessage
+public class PollMessage extends GpsdCommandMessage
 {
    public static final String CLASS = "POLL";
 

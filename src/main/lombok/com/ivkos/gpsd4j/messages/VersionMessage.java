@@ -23,7 +23,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public class VersionMessage extends GpsdMessage implements GpsdCommandMessage
+public class VersionMessage extends GpsdCommandMessage
 {
    public static final String CLASS = "VERSION";
 

@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public class DeviceMessage extends GpsdMessage implements GpsdCommandMessage
+public class DeviceMessage extends GpsdCommandMessage
 {
    public static final String CLASS = "DEVICE";
 

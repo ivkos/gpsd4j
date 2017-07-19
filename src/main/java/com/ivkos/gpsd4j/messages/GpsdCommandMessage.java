@@ -19,7 +19,4 @@ package com.ivkos.gpsd4j.messages;
 /**
  * Indicates a message that can be sent to gpsd as a command
  */
-public interface GpsdCommandMessage
-{
-   String getGpsdClass();
-}
+public abstract class GpsdCommandMessage extends GpsdMessage { }
