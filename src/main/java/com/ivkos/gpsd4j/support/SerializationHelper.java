@@ -25,9 +25,7 @@ import org.reflections.Reflections;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 
 import static java.lang.String.format;
@@ -40,6 +38,7 @@ public class SerializationHelper
    private static final String GPSDMESSAGE_CLASS_FIELD_NAME = "CLASS";
 
    private static final Map<String, Class<? extends GpsdMessage>> gpsdClassNameToClassMap;
+   private static final Map<Class<?>, List<Class<?>>> classToClassHierarchyListMap = new HashMap<>();
 
    static {
       Reflections reflections = new Reflections(GpsdMessage.class.getPackage().getName());
@@ -48,9 +47,9 @@ public class SerializationHelper
       gpsdClassNameToClassMap = unmodifiableMap(objectClasses.stream()
             .filter(clazz -> !Modifier.isAbstract(clazz.getModifiers()))
             .collect(toMap(
-            SerializationHelper::getGpsdClassNameByClass,
-            Function.identity()
-      )));
+                  SerializationHelper::getGpsdClassNameByClass,
+                  Function.identity()
+            )));
    }
 
    // Support for deserialization into LocalDateTime
@@ -127,5 +126,29 @@ public class SerializationHelper
       }
 
       return gpsdClassName;
+   }
+
+   /**
+    * Returns a list consisting of the class of the object and its superclasses, excluding {@link Object}
+    *
+    * @param obj the object
+    */
+   public static List<Class<?>> getClassHierarchy(Object obj)
+   {
+      Class objClass = obj.getClass();
+
+      List<Class<?>> classes = classToClassHierarchyListMap.get(objClass);
+      if (classes != null) return classes;
+
+      List<Class<?>> result = new LinkedList<>();
+
+      while (objClass != null && objClass != Object.class) {
+         result.add(objClass);
+         objClass = objClass.getSuperclass();
+      }
+
+      classToClassHierarchyListMap.put(objClass, result);
+
+      return result;
    }
 }
