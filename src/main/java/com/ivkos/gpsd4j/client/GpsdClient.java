@@ -88,7 +88,7 @@ public class GpsdClient
     */
    public GpsdClient(String serverHost, int serverPort)
    {
-      this(serverHost, serverPort, GpsdClientOptions.builder().build());
+      this(serverHost, serverPort, new GpsdClientOptions());
    }
 
    /**
@@ -286,7 +286,7 @@ public class GpsdClient
          return;
       }
 
-      if (options.isReconnectOnDisconnect()) {
+      if (options.getReconnectOnDisconnect()) {
          log.warn("Disconnected from gpsd server {}:{}. Will now try to reconnect...", serverHost, serverPort);
          this.connectToGpsd();
       } else {
