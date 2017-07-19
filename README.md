@@ -48,6 +48,6 @@ dependencies {
 ```
 
 ## Documentation
-Javadocs can be found [here](https://jitpack.io/com/ivkos/gpsd4j/gpsd4j/1.0.0/javadoc/).
+Javadocs can be found [here](https://jitpack.io/com/ivkos/gpsd4j/1.0.0/javadoc/).
 
 ## Quick Start
