@@ -22,15 +22,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
+/**
+ * Represents a message the can be received from the gpsd server
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(NON_NULL)
 public abstract class GpsdMessage
 {
+   /**
+    * The gpsd-specific class of this type of message
+    */
    public static final String CLASS = null;
 
+   /**
+    * The gpsd-specific class of this message
+    */
    @JsonProperty("class")
    private String _class = getGpsdClass();
 
+   /**
+    * @return the gpsd-specific class of this message
+    */
    @JsonProperty("class")
    public abstract String getGpsdClass();
 }

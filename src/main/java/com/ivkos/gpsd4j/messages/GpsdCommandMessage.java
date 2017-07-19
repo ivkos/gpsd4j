@@ -17,6 +17,6 @@
 package com.ivkos.gpsd4j.messages;
 
 /**
- * Indicates a message that can be sent to gpsd as a command
+ * Represents a message that can be received from or sent to the gpsd server as a command
  */
 public abstract class GpsdCommandMessage extends GpsdMessage { }
