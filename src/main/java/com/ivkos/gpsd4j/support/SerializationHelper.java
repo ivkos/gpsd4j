@@ -24,6 +24,7 @@ import io.vertx.core.json.JsonObject;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -44,7 +45,9 @@ public class SerializationHelper
       Reflections reflections = new Reflections(GpsdMessage.class.getPackage().getName());
       Set<Class<? extends GpsdMessage>> objectClasses = reflections.getSubTypesOf(GpsdMessage.class);
 
-      gpsdClassNameToClassMap = unmodifiableMap(objectClasses.stream().collect(toMap(
+      gpsdClassNameToClassMap = unmodifiableMap(objectClasses.stream()
+            .filter(clazz -> !Modifier.isAbstract(clazz.getModifiers()))
+            .collect(toMap(
             SerializationHelper::getGpsdClassNameByClass,
             Function.identity()
       )));
