@@ -19,6 +19,9 @@ package com.ivkos.gpsd4j.messages.enums;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+/**
+ * Represents the parity of the serial connection between gpsd and the device
+ */
 public enum DeviceParity
 {
    NO("N"),
@@ -32,12 +35,22 @@ public enum DeviceParity
       this.code = code;
    }
 
+   /**
+    * @return the code of the enum constant
+    */
    @JsonValue
    public String getCode()
    {
       return code;
    }
 
+   /**
+    * Returns the constant with the specified code
+    *
+    * @param code the code
+    *
+    * @return the corresponding enum constant, or null if there is no constant with this code
+    */
    @JsonCreator
    public static DeviceParity forCode(String code)
    {

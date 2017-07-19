@@ -16,10 +16,28 @@
 
 package com.ivkos.gpsd4j.messages.enums;
 
+/**
+ * Represents the NMEA mode of the TPV report
+ */
 public enum NMEAMode
 {
+   /**
+    * No mode value yet seen
+    */
    NotSet,
+
+   /**
+    * No fix
+    */
    NoFix,
+
+   /**
+    * 2D fix
+    */
    TwoDimensional,
+
+   /**
+    * 3D fix
+    */
    ThreeDimensional
 }
