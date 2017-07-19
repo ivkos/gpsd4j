@@ -1,6 +1,6 @@
 # gpsd4j
 
-[![Release](https://jitpack.io/v/com.ivkos.gpsd4j/gpsd4j.svg)](https://jitpack.io/#com.ivkos.gpsd4j/gpsd4j)
+[![Release](https://jitpack.io/v/com.ivkos/gpsd4j.svg)](https://jitpack.io/#com.ivkos/gpsd4j)
 
 **gpsd4j** is a Java library that allows you to communicate with a [gpsd server](http://www.catb.org/gpsd/).
 
@@ -23,7 +23,7 @@
 **Step 2.** Add the dependency:
 ```xml
 <dependency>
-    <groupId>com.ivkos.gpsd4j</groupId>
+    <groupId>com.ivkos</groupId>
     <artifactId>gpsd4j</artifactId>
     <version>1.0.0</version>
 </dependency>
@@ -43,7 +43,7 @@ allprojects {
 **Step 2.** Add the dependency:
 ```
 dependencies {
-    compile 'com.ivkos.gpsd4j:gpsd4j:1.0.0'
+    compile 'com.ivkos:gpsd4j:1.0.0'
 }
 ```
 
