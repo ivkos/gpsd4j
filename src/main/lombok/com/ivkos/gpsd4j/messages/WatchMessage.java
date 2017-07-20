@@ -28,24 +28,74 @@ public class WatchMessage extends GpsdCommandMessage
 {
    public static final String CLASS = "WATCH";
 
+   /**
+    * Enable (true) or disable (false) watcher mode. Default is true.
+    *
+    * @return watch mode
+    * @param enable watcher mode
+    */
    @Setter
    private Boolean enable = true;
 
+   /**
+    * Enable (true) or disable (false) dumping of JSON reports. Default is false.
+    *
+    * @return dumping of JSON reports
+    * @param json dumping of JSON reports
+    */
    @Setter
    private Boolean json = false;
 
+   /**
+    * Enable (true) or disable (false) dumping of binary packets as pseudo-NMEA. Default is false.
+    *
+    * @return pseudo-NMEA
+    */
    private Boolean nmea;
 
+   /**
+    * Controls 'raw' mode. When this attribute is set to 1 for a channel, gpsd reports the unprocessed NMEA or AIVDM
+    * data stream from whatever device is attached. Binary GPS packets are hex-dumped. RTCM2 and RTCM3 packets are not
+    * dumped in raw mode. When this attribute is set to 2 for a channel that processes binary data, gpsd reports the
+    * received data verbatim without hex-dumping.
+    *
+    * @return raw mode
+    */
    private Integer raw;
 
+   /**
+    * If true, apply scaling divisors to output before dumping; default is false.
+    *
+    * @return apply scaling divisors
+    */
    @Setter
    private Boolean scaled;
 
+   /**
+    * If true, aggregate AIS type24 sentence parts. If false, report each part as a separate JSON object, leaving the
+    * client to match MMSIs and aggregate. Default is false. Applies only to AIS reports.
+    *
+    * @return aggregate AIS type24 sentence parts
+    */
    private Boolean split24;
 
+   /**
+    * If true, emit the TOFF JSON message on each cycle and a PPS JSON message when the device issues 1PPS. Default is
+    * false.
+    *
+    * @return emit TOFF and PPS JSON messages
+    * @param pps emit TOFF and PPS JSON messages
+    */
    @Setter
    private Boolean pps;
 
+   /**
+    * If present, enable watching only of the specified device rather than all devices. Useful with raw and NMEA modes
+    * in which device responses aren't tagged. Has no effect when used with enable:false.
+    *
+    * @return If present, enable watching only of the specified device
+    * @param device If present, enable watching only of the specified device
+    */
    @Setter
    private String device;
 

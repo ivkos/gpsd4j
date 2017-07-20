@@ -17,12 +17,13 @@
 package com.ivkos.gpsd4j.messages;
 
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.ToString;
 
 import java.util.List;
 
-@Getter
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
+
 @ToString
 @EqualsAndHashCode(callSuper = false)
 public class DevicesMessage extends GpsdMessage
@@ -30,6 +31,11 @@ public class DevicesMessage extends GpsdMessage
    public static final String CLASS = "DEVICES";
 
    private List<DeviceMessage> devices;
+
+   public List<DeviceMessage> getDevices()
+   {
+      return (devices != null) ? unmodifiableList(devices) : emptyList();
+   }
 
    @Override
    public String getGpsdClass()

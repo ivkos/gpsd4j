@@ -19,13 +19,14 @@ package com.ivkos.gpsd4j.messages;
 import com.ivkos.gpsd4j.messages.reports.SKYReport;
 import com.ivkos.gpsd4j.messages.reports.TPVReport;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
+
 @ToString
 @EqualsAndHashCode(callSuper = false)
 public class PollMessage extends GpsdCommandMessage
@@ -37,6 +38,29 @@ public class PollMessage extends GpsdCommandMessage
 
    private List<TPVReport> tpv;
    private List<SKYReport> sky;
+
+   public LocalDateTime getTime()
+   {
+      return time;
+   }
+
+   /**
+    * @return Count of active devices.
+    */
+   public Integer getActiveCount()
+   {
+      return active;
+   }
+
+   public List<TPVReport> getTPVList()
+   {
+      return (tpv != null) ? unmodifiableList(tpv) : emptyList();
+   }
+
+   public List<SKYReport> getSKYList()
+   {
+      return (sky != null) ? unmodifiableList(sky) : emptyList();
+   }
 
    @Override
    public String getGpsdClass()
