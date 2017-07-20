@@ -16,6 +16,8 @@
 
 package com.ivkos.gpsd4j.support;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ivkos.gpsd4j.messages.GpsdMessage;
 import io.vertx.core.json.DecodeException;
@@ -52,11 +54,23 @@ public class SerializationHelper
             )));
    }
 
-   // Support for deserialization into LocalDateTime
+   // Configure vertx's backing ObjectMapper
    static {
+      // Support for deserialization into LocalDateTime
       JavaTimeModule javaTimeModule = new JavaTimeModule();
-      Json.mapper.registerModule(javaTimeModule);
-      Json.prettyMapper.registerModule(javaTimeModule);
+
+      for (ObjectMapper mapper : Arrays.asList(Json.mapper, Json.prettyMapper)) {
+         mapper.registerModule(javaTimeModule);
+
+         // use only fields for de/serialization
+         mapper.setVisibility(mapper.getSerializationConfig().getDefaultVisibilityChecker()
+               .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+               .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
+               .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
+               .withCreatorVisibility(JsonAutoDetect.Visibility.NONE)
+               .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE)
+         );
+      }
    }
 
    /**
