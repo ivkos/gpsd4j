@@ -16,9 +16,11 @@
 
 package com.ivkos.gpsd4j.messages;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ivkos.gpsd4j.messages.reports.SKYReport;
 import com.ivkos.gpsd4j.messages.reports.TPVReport;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
@@ -33,24 +35,18 @@ public class PollMessage extends GpsdCommandMessage
 {
    public static final String CLASS = "POLL";
 
+   @Getter
    private LocalDateTime time;
-   private Integer active;
-
-   private List<TPVReport> tpv;
-   private List<SKYReport> sky;
-
-   public LocalDateTime getTime()
-   {
-      return time;
-   }
 
    /**
     * @return Count of active devices.
     */
-   public Integer getActiveCount()
-   {
-      return active;
-   }
+   @Getter
+   @JsonProperty("active")
+   private Integer activeCount;
+
+   private List<TPVReport> tpv;
+   private List<SKYReport> sky;
 
    public List<TPVReport> getTPVList()
    {
