@@ -42,7 +42,12 @@ public class DeviceMessage extends GpsdCommandMessage
    @Setter
    private String path;
 
-   private LocalDateTime activated;
+   /**
+    * @return Time the device was activated
+    */
+   @Getter
+   @JsonProperty("activated")
+   private LocalDateTime timeActivated;
 
    /**
     * GPSD's name for the device driver type. Won't be reported before gpsd has seen identifiable packets from the
@@ -69,7 +74,14 @@ public class DeviceMessage extends GpsdCommandMessage
    @Setter
    private DeviceParity parity;
 
-   private Integer stopbits;
+   /**
+    * @return Stop bits (1 or 2).
+    * @param stopBits Stop bits (1 or 2).
+    */
+   @Getter
+   @Setter
+   @JsonProperty("stopbits")
+   private Integer stopBits;
 
    @JsonProperty("native")
    private Integer _native;
@@ -82,15 +94,12 @@ public class DeviceMessage extends GpsdCommandMessage
    @Setter
    private Double cycle;
 
-   private Double mincycle;
-
    /**
-    * @return Time the device was activated
+    * @return Device minimum cycle time in seconds.
     */
-   public LocalDateTime getTimeActivated()
-   {
-      return activated;
-   }
+   @Getter
+   @JsonProperty("mincycle")
+   private Double minimumCycle;
 
    /**
     * @return true for alternate mode (binary if it has one, for SiRF and Evermore chipsets in particular), false for
@@ -110,30 +119,6 @@ public class DeviceMessage extends GpsdCommandMessage
    public void setNative(boolean nativeMode)
    {
       this._native = nativeMode ? 1 : 0;
-   }
-
-   /**
-    * @return Device minimum cycle time in seconds.
-    */
-   public Double getMinimumCycle()
-   {
-      return mincycle;
-   }
-
-   /**
-    * @return Stop bits (1 or 2).
-    */
-   public Integer getStopBits()
-   {
-      return stopbits;
-   }
-
-   /**
-    * @param stopbits Stop bits (1 or 2).
-    */
-   public void setStopBits(Integer stopbits)
-   {
-      this.stopbits = stopbits;
    }
 
    @Override
