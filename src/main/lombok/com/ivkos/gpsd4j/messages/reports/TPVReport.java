@@ -25,6 +25,11 @@ import lombok.ToString;
 
 import java.time.LocalDateTime;
 
+/**
+ * A TPV object is a time-position-velocity report. The "class" and "mode" fields will reliably be present. The "mode"
+ * field will be emitted before optional fields that may be absent when there is no fix. Error estimates will be emitted
+ * after the fix components they're associated with. Others may be reported or not depending on the fix quality.
+ */
 @Getter
 @ToString
 @EqualsAndHashCode(callSuper = false)
