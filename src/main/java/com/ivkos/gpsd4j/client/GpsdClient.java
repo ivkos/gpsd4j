@@ -131,11 +131,18 @@ public class GpsdClient
    {
       this.addHandler((Class<T>) cmd.getClass(), new Consumer<T>()
       {
+         // ensures this consumer doesn't get executed more than once
+         private volatile boolean done = false;
+
          @Override
          public void accept(T t)
          {
-            consumer.accept(t);
+            if (done) return;
+
+            done = true;
             GpsdClient.this.removeHandler(this);
+
+            consumer.accept(t);
          }
       });
 
