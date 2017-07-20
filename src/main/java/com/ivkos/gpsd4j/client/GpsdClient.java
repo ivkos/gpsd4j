@@ -152,8 +152,8 @@ public class GpsdClient
    public GpsdClient watch(boolean enable, boolean dumpJson)
    {
       WatchMessage watch = new WatchMessage();
-      watch.setEnable(enable);
-      watch.setJson(dumpJson);
+      watch.setEnabled(enable);
+      watch.setDumpJson(dumpJson);
 
       return this.sendCommand(watch);
    }

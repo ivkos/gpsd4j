@@ -16,6 +16,7 @@
 
 package com.ivkos.gpsd4j.messages;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,26 +33,28 @@ public class WatchMessage extends GpsdCommandMessage
     * Enable (true) or disable (false) watcher mode. Default is true.
     *
     * @return watch mode
-    * @param enable watcher mode
+    * @param enabled watcher mode
     */
    @Setter
-   private Boolean enable = true;
+   @JsonProperty("enable")
+   private boolean enabled = true;
 
    /**
     * Enable (true) or disable (false) dumping of JSON reports. Default is false.
     *
     * @return dumping of JSON reports
-    * @param json dumping of JSON reports
+    * @param dumpJson dumping of JSON reports
     */
    @Setter
-   private Boolean json = false;
+   @JsonProperty("json")
+   private Boolean dumpJson = false;
 
    /**
     * Enable (true) or disable (false) dumping of binary packets as pseudo-NMEA. Default is false.
     *
     * @return pseudo-NMEA
     */
-   private Boolean nmea;
+   private boolean nmea = false;
 
    /**
     * Controls 'raw' mode. When this attribute is set to 1 for a channel, gpsd reports the unprocessed NMEA or AIVDM
@@ -69,7 +72,7 @@ public class WatchMessage extends GpsdCommandMessage
     * @return apply scaling divisors
     */
    @Setter
-   private Boolean scaled;
+   private boolean scaled = false;
 
    /**
     * If true, aggregate AIS type24 sentence parts. If false, report each part as a separate JSON object, leaving the
@@ -77,7 +80,7 @@ public class WatchMessage extends GpsdCommandMessage
     *
     * @return aggregate AIS type24 sentence parts
     */
-   private Boolean split24;
+   private Boolean split24 = false;
 
    /**
     * If true, emit the TOFF JSON message on each cycle and a PPS JSON message when the device issues 1PPS. Default is
@@ -87,7 +90,7 @@ public class WatchMessage extends GpsdCommandMessage
     * @param pps emit TOFF and PPS JSON messages
     */
    @Setter
-   private Boolean pps;
+   private Boolean pps = false;
 
    /**
     * If present, enable watching only of the specified device rather than all devices. Useful with raw and NMEA modes
