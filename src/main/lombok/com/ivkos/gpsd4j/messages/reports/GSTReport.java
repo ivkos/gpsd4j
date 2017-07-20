@@ -23,6 +23,9 @@ import lombok.ToString;
 
 import java.time.LocalDateTime;
 
+/**
+ * A GST object is a pseudorange noise report.
+ */
 @Getter
 @ToString
 @EqualsAndHashCode(callSuper = false)
@@ -30,12 +33,51 @@ public class GSTReport extends GpsdMessage
 {
    public static final String CLASS = "GST";
 
+   /**
+    * @return Name of originating device
+    */
    private String device;
+
+   /**
+    * @return Time since the Unix epoch, UTC. May have a fractional part of up to .001sec precision.
+    */
    private LocalDateTime time;
 
-   private Double rms, major, minor;
+   /**
+    * @return Value of the standard deviation of the range inputs to the navigation process (range inputs include
+    * pseudoranges and DGPS corrections).
+    */
+   private Double rms;
+
+   /**
+    * @return Standard deviation of semi-major axis of error ellipse, in meters.
+    */
+   private Double major;
+
+   /**
+    * @return Standard deviation of semi-minor axis of error ellipse, in meters.
+    */
+   private Double minor;
+
+   /**
+    * @return Orientation of semi-major axis of error ellipse, in degrees from true north.
+    */
    private Double orient;
-   private Double lat, lon, alt;
+
+   /**
+    * @return Standard deviation of latitude error, in meters.
+    */
+   private Double lat;
+
+   /**
+    * @return Standard deviation of longitude error, in meters.
+    */
+   private Double lon;
+
+   /**
+    * @return Standard deviation of altitude error, in meters.
+    */
+   private Double alt;
 
    @Override
    public String getGpsdClass()
