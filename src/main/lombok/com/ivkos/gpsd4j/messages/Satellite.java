@@ -18,51 +18,39 @@ package com.ivkos.gpsd4j.messages;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
+@Getter
 @ToString
 @EqualsAndHashCode
 public class Satellite
 {
-   @JsonProperty("PRN")
-   private Integer PRN;
-
-   private Double az, el, ss;
-   private Boolean used;
-
    /**
     * PRN ID of the satellite. 1-63 are GNSS satellites, 64-96 are GLONASS satellites, 100-164 are SBAS satellites
     *
     * @return PRN id
     */
-   public Integer getPRN()
-   {
-      return PRN;
-   }
+   @JsonProperty("PRN")
+   private Integer PRN;
 
    /**
     * @return Azimuth, degrees from true north.
     */
-   public Double getAzimuth()
-   {
-      return az;
-   }
+   @JsonProperty("az")
+   private Double azimuth;
 
    /**
     * @return Elevation in degrees.
     */
-   public Double getElevation()
-   {
-      return el;
-   }
+   @JsonProperty("el")
+   private Double elevation;
 
    /**
     * @return Signal strength in dB.
     */
-   public Double getSignalStrength()
-   {
-      return ss;
-   }
+   @JsonProperty("ss")
+   private Double signalStrength;
 
    /**
     * Used in current solution? (SBAS/WAAS/EGNOS satellites may be flagged used if the solution has corrections from
@@ -70,8 +58,6 @@ public class Satellite
     *
     * @return Used in current solution?
     */
-   public Boolean isUsed()
-   {
-      return used;
-   }
+   @JsonProperty("used")
+   private boolean used;
 }
