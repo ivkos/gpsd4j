@@ -92,10 +92,12 @@ public class SerializationHelper
       }
 
       String className = obj.getString(JSON_CLASS_KEY);
-      if (className == null) throw new GpsdParseException("Could not parse JSON: missing '%s' key", JSON_CLASS_KEY);
+      if (className == null) throw new GpsdParseException("Could not parse JSON: missing '%s' key in JSON: %s",
+            JSON_CLASS_KEY, json);
 
       Class<T> clazz = (Class<T>) gpsdClassNameToClassMap.get(className);
-      if (clazz == null) throw new GpsdParseException("Could not parse JSON: unknown class '%s'", className);
+      if (clazz == null) throw new GpsdParseException("Could not parse JSON: unknown class '%s' in JSON: %s",
+            className, json);
 
       try {
          return Json.decodeValue(json, clazz);
