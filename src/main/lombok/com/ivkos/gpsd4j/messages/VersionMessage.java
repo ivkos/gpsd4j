@@ -16,55 +16,45 @@
 
 package com.ivkos.gpsd4j.messages;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
+@Getter
 @ToString
 @EqualsAndHashCode(callSuper = false)
 public class VersionMessage extends GpsdCommandMessage
 {
    public static final String CLASS = "VERSION";
 
+   /**
+    * @return Public release level
+    */
+   @JsonProperty("release")
    private String release;
-   private String rev;
-   private Integer proto_major;
-   private Integer proto_minor;
+
+   /**
+    * @return Internal revision-control level
+    */
+   @JsonProperty("rev")
+   private String revision;
+
+   /**
+    * @return API major revision level
+    */
+   @JsonProperty("proto_major")
+   private Integer protocolMajor;
+
+   /**
+    * @return API minor revision level
+    */
+   @JsonProperty("proto_minor")
+   private Integer protocolMinor;
 
    @Override
    public String getGpsdClass()
    {
       return CLASS;
-   }
-
-   /**
-    * @return Public release level
-    */
-   public String getRelease()
-   {
-      return release;
-   }
-
-   /**
-    * @return Internal revision-control level
-    */
-   public String getRevision()
-   {
-      return rev;
-   }
-
-   /**
-    * @return API major revision level
-    */
-   public Integer getProtocolMajor()
-   {
-      return proto_major;
-   }
-
-   /**
-    * @return API minor revision level
-    */
-   public Integer getProtocolMinor()
-   {
-      return proto_minor;
    }
 }
