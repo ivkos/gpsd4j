@@ -16,6 +16,7 @@
 
 package com.ivkos.gpsd4j.client;
 
+import com.ivkos.gpsd4j.messages.ErrorMessage;
 import com.ivkos.gpsd4j.messages.GpsdCommandMessage;
 import com.ivkos.gpsd4j.messages.GpsdMessage;
 import com.ivkos.gpsd4j.messages.WatchMessage;
@@ -171,6 +172,30 @@ public class GpsdClient
       this.handlers.putIfAbsent(responseClass, list);
 
       return this;
+   }
+
+   /**
+    * Adds a generic handler that handles all types of gpsd messages, including ERRORs.
+    * The effect of this call is equivalent to that of calling
+    * {@link #addHandler(Class, Consumer) addHandler(GpsdMessage.class, handler)}
+    *
+    * @param handler the handler that gets passed an object of subtype of {@link GpsdMessage}
+    */
+   public GpsdClient addHandler(Consumer<GpsdMessage> handler)
+   {
+      return this.addHandler(GpsdMessage.class, handler);
+   }
+
+   /**
+    * Adds a handler that handles gpsd ERROR messages: {@link ErrorMessage}.
+    * The effect of this call is equivalent to that of calling
+    * {@link #addHandler(Class, Consumer) addHandler(ErrorMessage.class, handler)}
+    *
+    * @param handler the handler that gets passed an {@link ErrorMessage} object
+    */
+   public GpsdClient addErrorHandler(Consumer<ErrorMessage> handler)
+   {
+      return this.addHandler(ErrorMessage.class, handler);
    }
 
    /**
