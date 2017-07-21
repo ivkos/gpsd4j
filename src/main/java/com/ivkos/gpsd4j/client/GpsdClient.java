@@ -117,10 +117,12 @@ public class GpsdClient
     * @return a reference to this, so the API can be used fluently
     *
     * @throws IllegalStateException if the client has not been started or it was stopped
+    * @throws NullPointerException  if {@code rawCommand} is null
     */
    public GpsdClient sendCommand(String rawCommand)
    {
       if (!isRunning()) throw new IllegalStateException("Client is not running");
+      requireNonNull(rawCommand, "rawCommand must not be null");
 
       this.clientSocket.write(rawCommand);
       log.debug("Wrote: {}", rawCommand);
@@ -136,9 +138,12 @@ public class GpsdClient
     * @return a reference to this, so the API can be used fluently
     *
     * @throws IllegalStateException if the client has not been started or it was stopped
+    * @throws NullPointerException  if {@code command} is null
     */
    public GpsdClient sendCommand(GpsdCommandMessage command)
    {
+      requireNonNull(command, "command must not be null");
+
       return this.sendCommand(format(
             "?%s=%s",
             command.getGpsdClass(), serialize(command)
@@ -156,10 +161,14 @@ public class GpsdClient
     * @return a reference to this, so the API can be used fluently
     *
     * @throws IllegalStateException if the client has not been started or it was stopped
+    * @throws NullPointerException  if {@code command} or {@code responseHandler} is null
     */
    @SuppressWarnings("unchecked")
    public <T extends GpsdCommandMessage> GpsdClient sendCommand(T command, Consumer<T> responseHandler)
    {
+      requireNonNull(command, "command must not be null");
+      requireNonNull(responseHandler, "responseHandler must not be null");
+
       this.addHandler((Class<T>) command.getClass(), new Consumer<T>()
       {
          // ensures this consumer doesn't get executed more than once
@@ -227,10 +236,15 @@ public class GpsdClient
     * @param <T>         the type of the message
     *
     * @return a reference to this, so the API can be used fluently
+    *
+    * @throws NullPointerException if {@code messageType} or {@code handler} is null
     */
    @SuppressWarnings("unchecked")
    public <T extends GpsdMessage> GpsdClient addHandler(Class<T> messageType, Consumer<T> handler)
    {
+      requireNonNull(messageType, "messageType must not be null");
+      requireNonNull(handler, "handler must not be null");
+
       List<Consumer<GpsdMessage>> list = this.handlers.getOrDefault(messageType, synchronizedList(new ArrayList<>()));
       list.add((Consumer<GpsdMessage>) handler);
       this.handlers.putIfAbsent(messageType, list);
@@ -247,6 +261,8 @@ public class GpsdClient
     * @param handler the handler that gets passed an object of subtype of {@link GpsdMessage}
     *
     * @return a reference to this, so the API can be used fluently
+    *
+    * @throws NullPointerException if {@code handler} is null
     */
    public GpsdClient addHandler(Consumer<GpsdMessage> handler)
    {
@@ -262,6 +278,8 @@ public class GpsdClient
     * @param handler the handler that gets passed an {@link ErrorMessage} object
     *
     * @return a reference to this, so the API can be used fluently
+    *
+    * @throws NullPointerException if {@code handler} is null
     */
    public GpsdClient addErrorHandler(Consumer<ErrorMessage> handler)
    {
@@ -319,26 +337,35 @@ public class GpsdClient
     *
     * @return <tt>true</tt> if the handler was removed, or <tt>false</tt> if it has not been registered for this message
     * type before
+    *
+    * @throws NullPointerException if {@code messageType} or {@code handler} is null
     */
    public <T extends GpsdMessage> boolean removeHandler(Class<T> messageType, Consumer<T> handler)
    {
+      requireNonNull(messageType, "messageType must not be null");
+      requireNonNull(handler, "handler must not be null");
+
       return this.handlers.getOrDefault(messageType, emptyList()).remove(handler);
    }
 
    /**
     * Removes the handler from all types of messages it was registered for.
     *
-    * @param consumer the handler to remove
-    * @param <T>      the type of the message
+    * @param handler the handler to remove
+    * @param <T>     the type of the message
     *
     * @return <tt>true</tt> if the handler was removed, or <tt>false</tt> if it has not been registered before
+    *
+    * @throws NullPointerException if {@code handler} is null
     */
-   public <T extends GpsdMessage> boolean removeHandler(Consumer<T> consumer)
+   public <T extends GpsdMessage> boolean removeHandler(Consumer<T> handler)
    {
+      requireNonNull(handler, "handler must not be null");
+
       final boolean[] removed = { false };
 
       this.handlers.forEach((key, consumersList) -> {
-         if (consumersList.remove(consumer)) {
+         if (consumersList.remove(handler)) {
             removed[0] = true;
          }
       });
