@@ -61,6 +61,7 @@ public class GpsdClient
    private Vertx vertx;
    private NetClient netClient;
    private NetSocket clientSocket;
+   private Consumer<GpsdClient> successfulConnectionHandler = __ -> {};
 
    /**
     * Creates a new instance
@@ -268,6 +269,48 @@ public class GpsdClient
    }
 
    /**
+    * Sets a handler that is executed upon successful connection the gpsd server. Note that this includes reconnections
+    * as well. The handler gets passed the current {@link GpsdClient}.
+    * <p>
+    * Setting such a handler may be useful for configuring device parameters and watch mode settings that may be
+    * otherwise lost if the connection drops or the gpsd server restarts. For example:
+    * <pre>{@code
+    * new GpsdClient(...)
+    *    .setSuccessfulConnectionHandler(client -> {
+    *       DeviceMessage device = new DeviceMessage();
+    *       device.setPath("/dev/ttyAMA0");
+    *       device.setNative(true);
+    *
+    *       client.sendCommand(device);
+    *       client.watch();
+    *    })
+    *    .addHandler(TPVReport.class, tpv -> { ... })
+    *    .start();
+    * }</pre>
+    *
+    * @param handler the handler
+    *
+    * @return a reference to this, so the API can be used fluently
+    *
+    * @throws NullPointerException if {@code handler} is null
+    */
+   public GpsdClient setSuccessfulConnectionHandler(Consumer<GpsdClient> handler)
+   {
+      this.successfulConnectionHandler = requireNonNull(handler, "handler must not be null");
+      return this;
+   }
+
+   /**
+    * Removes the successful connection handler.
+    *
+    * @return a reference to this, so the API can be used fluently
+    */
+   public GpsdClient removeSuccessfulConnectionHandler()
+   {
+      return this.setSuccessfulConnectionHandler(__ -> {});
+   }
+
+   /**
     * Removes the handler from the message type (a subtype of {@link GpsdMessage}) it was registered for.
     *
     * @param messageType the message type the handler was registered for
@@ -371,6 +414,8 @@ public class GpsdClient
       this.startingLock.unlockWrite(this.startingLockStamp);
 
       log.info("Successfully connected to gpsd server {}:{}", serverHost, serverPort);
+
+      this.executeBlockingHandler(this.successfulConnectionHandler, this, false);
    }
 
    private void handleClose()
@@ -412,14 +457,25 @@ public class GpsdClient
          return;
       }
 
-      getClassHierarchy(obj).forEach(clazz -> {
-         handlers.getOrDefault(clazz, emptyList()).forEach(handler -> vertx.executeBlocking(f -> {
-            try {
-               handler.andThen(__ -> f.complete()).accept(obj);
-            } catch (Throwable t) {
-               f.fail(t);
-            }
-         }, true, __ -> {}));
+      getClassHierarchy(obj).forEach(clazz -> this.handlers
+            .getOrDefault(clazz, emptyList())
+            .forEach(handler -> this.executeBlockingHandler(handler, obj, true))
+      );
+   }
+
+   private <T> void executeBlockingHandler(Consumer<T> handler, T handlerInput, boolean ordered)
+   {
+      this.vertx.executeBlocking(future -> {
+         try {
+            handler.accept(handlerInput);
+            future.complete();
+         } catch (Throwable t) {
+            future.fail(t);
+         }
+      }, ordered, result -> {
+         if (result.failed()) {
+            log.error("Exception thrown in handler", result.cause());
+         }
       });
    }
 
