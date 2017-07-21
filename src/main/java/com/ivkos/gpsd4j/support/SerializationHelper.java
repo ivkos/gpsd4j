@@ -78,6 +78,7 @@ public class SerializationHelper
     * subtype of {@link GpsdMessage}.
     *
     * @param json the JSON string
+    * @param <T>  the type of message
     *
     * @return the corresponding object, a subtype of {@link GpsdMessage}
     */
@@ -148,6 +149,8 @@ public class SerializationHelper
     * Returns a list consisting of the class of the object and its superclasses, excluding {@link Object}
     *
     * @param obj the object
+    *
+    * @return a list of classes
     */
    public static List<Class<?>> getClassHierarchy(Object obj)
    {

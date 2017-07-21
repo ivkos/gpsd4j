@@ -272,6 +272,7 @@ public class GpsdClient
     *
     * @param messageType the message type the handler was registered for
     * @param handler     the handler to remove
+    * @param <T>         the type of the message
     *
     * @return <tt>true</tt> if the handler was removed, or <tt>false</tt> if it has not been registered for this message
     * type before
@@ -285,6 +286,7 @@ public class GpsdClient
     * Removes the handler from all types of messages it was registered for.
     *
     * @param consumer the handler to remove
+    * @param <T>      the type of the message
     *
     * @return <tt>true</tt> if the handler was removed, or <tt>false</tt> if it has not been registered before
     */

@@ -70,6 +70,7 @@ public class WatchMessage extends GpsdCommandMessage
     * If true, apply scaling divisors to output before dumping; default is false.
     *
     * @return apply scaling divisors
+    * @param scaled apply scaling divisors
     */
    @Setter
    private boolean scaled = false;
