@@ -16,10 +16,7 @@
 
 package com.ivkos.gpsd4j.client;
 
-import com.ivkos.gpsd4j.messages.ErrorMessage;
-import com.ivkos.gpsd4j.messages.GpsdCommandMessage;
-import com.ivkos.gpsd4j.messages.GpsdMessage;
-import com.ivkos.gpsd4j.messages.WatchMessage;
+import com.ivkos.gpsd4j.messages.*;
 import com.ivkos.gpsd4j.support.GpsdParseException;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Vertx;
@@ -95,6 +92,8 @@ public class GpsdClient
    /**
     * Starts the client.
     *
+    * @return a reference to this, so the API can be used fluently
+    *
     * @throws IllegalStateException if start() is called and the client is already running
     */
    public GpsdClient start()
@@ -109,6 +108,15 @@ public class GpsdClient
       return this;
    }
 
+   /**
+    * Sends a raw command to the gpsd server in the form of a string.
+    *
+    * @param rawCommand the command
+    *
+    * @return a reference to this, so the API can be used fluently
+    *
+    * @throws IllegalStateException if the client has not been started or it was stopped
+    */
    public GpsdClient sendCommand(String rawCommand)
    {
       if (!isRunning()) throw new IllegalStateException("Client is not running");
@@ -119,18 +127,39 @@ public class GpsdClient
       return this;
    }
 
-   public GpsdClient sendCommand(GpsdCommandMessage cmd)
+   /**
+    * Sends a command to the server.
+    *
+    * @param command the command to send
+    *
+    * @return a reference to this, so the API can be used fluently
+    *
+    * @throws IllegalStateException if the client has not been started or it was stopped
+    */
+   public GpsdClient sendCommand(GpsdCommandMessage command)
    {
       return this.sendCommand(format(
             "?%s=%s",
-            cmd.getGpsdClass(), serialize(cmd)
+            command.getGpsdClass(), serialize(command)
       ));
    }
 
+   /**
+    * Sends a command to the gpsd server and binds a handler that will be executed exactly once when the server
+    * responds to the command.
+    *
+    * @param command         the command to send
+    * @param responseHandler the handler for the server's response to the command
+    * @param <T>             the type of the command and the response
+    *
+    * @return a reference to this, so the API can be used fluently
+    *
+    * @throws IllegalStateException if the client has not been started or it was stopped
+    */
    @SuppressWarnings("unchecked")
-   public <T extends GpsdCommandMessage> GpsdClient sendCommand(T cmd, Consumer<T> consumer)
+   public <T extends GpsdCommandMessage> GpsdClient sendCommand(T command, Consumer<T> responseHandler)
    {
-      this.addHandler((Class<T>) cmd.getClass(), new Consumer<T>()
+      this.addHandler((Class<T>) command.getClass(), new Consumer<T>()
       {
          // ensures this consumer doesn't get executed more than once
          private volatile boolean done = false;
@@ -143,43 +172,80 @@ public class GpsdClient
             done = true;
             GpsdClient.this.removeHandler(this);
 
-            consumer.accept(t);
+            responseHandler.accept(t);
          }
       });
 
-      return this.sendCommand(cmd);
+      return this.sendCommand(command);
    }
 
-   public GpsdClient watch(boolean enable, boolean dumpJson)
+   /**
+    * Sends a WATCH command to the gpsd server to enable/disable watch mode and enable/disable reporting of messages.
+    *
+    * @param enable         whether to enable watch mode
+    * @param reportMessages whether to report
+    *
+    * @return a reference to this, so the API can be used fluently
+    *
+    * @throws IllegalStateException if the client has not been started or it was stopped
+    */
+   public GpsdClient watch(boolean enable, boolean reportMessages)
    {
       WatchMessage watch = new WatchMessage();
       watch.setEnabled(enable);
-      watch.setDumpJson(dumpJson);
+      watch.setDumpJson(reportMessages);
 
       return this.sendCommand(watch);
    }
 
+   /**
+    * Sends a WATCH command to the gpsd server to enable watch mode and start reporting messages.
+    * <p>
+    * The effect of this call is equivalent to that of calling {@link #watch(boolean, boolean) watch(true, true)}.
+    *
+    * @return a reference to this, so the API can be used fluently
+    *
+    * @throws IllegalStateException if the client has not been started or it was stopped
+    */
    public GpsdClient watch()
    {
       return this.watch(true, true);
    }
 
+   /**
+    * Adds a handler for a type of messages. The handler is executed upon
+    * receiving that type of message and gets passed the message object itself.
+    * <p>
+    * The type of the message can be a concrete one (e.g. {@link VersionMessage}), or a more abstract one like {@link
+    * GpsdCommandMessage}. In the latter case, any received message that is of subtype of {@link GpsdCommandMessage}
+    * will be handled with this handler, as well as other handlers registered for its concrete type. The order of
+    * execution of handlers is from most concrete first to most abstract last.
+    *
+    * @param messageType the type of the messages to register the handler for
+    * @param handler     the handler that gets passed the message object
+    * @param <T>         the type of the message
+    *
+    * @return a reference to this, so the API can be used fluently
+    */
    @SuppressWarnings("unchecked")
-   public <T extends GpsdMessage> GpsdClient addHandler(Class<T> responseClass, Consumer<T> consumer)
+   public <T extends GpsdMessage> GpsdClient addHandler(Class<T> messageType, Consumer<T> handler)
    {
-      List<Consumer<GpsdMessage>> list = this.handlers.getOrDefault(responseClass, synchronizedList(new ArrayList<>()));
-      list.add((Consumer<GpsdMessage>) consumer);
-      this.handlers.putIfAbsent(responseClass, list);
+      List<Consumer<GpsdMessage>> list = this.handlers.getOrDefault(messageType, synchronizedList(new ArrayList<>()));
+      list.add((Consumer<GpsdMessage>) handler);
+      this.handlers.putIfAbsent(messageType, list);
 
       return this;
    }
 
    /**
     * Adds a generic handler that handles all types of gpsd messages, including ERRORs.
+    * <p>
     * The effect of this call is equivalent to that of calling
-    * {@link #addHandler(Class, Consumer) addHandler(GpsdMessage.class, handler)}
+    * {@link #addHandler(Class, Consumer) addHandler(GpsdMessage.class, handler)}.
     *
     * @param handler the handler that gets passed an object of subtype of {@link GpsdMessage}
+    *
+    * @return a reference to this, so the API can be used fluently
     */
    public GpsdClient addHandler(Consumer<GpsdMessage> handler)
    {
@@ -187,11 +253,14 @@ public class GpsdClient
    }
 
    /**
-    * Adds a handler that handles gpsd ERROR messages: {@link ErrorMessage}.
+    * Adds a handler that handles gpsd ERROR messages ({@link ErrorMessage}).
+    * <p>
     * The effect of this call is equivalent to that of calling
-    * {@link #addHandler(Class, Consumer) addHandler(ErrorMessage.class, handler)}
+    * {@link #addHandler(Class, Consumer) addHandler(ErrorMessage.class, handler)}.
     *
     * @param handler the handler that gets passed an {@link ErrorMessage} object
+    *
+    * @return a reference to this, so the API can be used fluently
     */
    public GpsdClient addErrorHandler(Consumer<ErrorMessage> handler)
    {
@@ -199,22 +268,25 @@ public class GpsdClient
    }
 
    /**
-    * @param responseClass the response class the handler is associated with
-    * @param consumer      the handler to remove
+    * Removes the handler from the message type (a subtype of {@link GpsdMessage}) it was registered for.
     *
-    * @return true if the handler has been removed, or false if was not registered before
+    * @param messageType the message type the handler was registered for
+    * @param handler     the handler to remove
+    *
+    * @return <tt>true</tt> if the handler was removed, or <tt>false</tt> if it has not been registered for this message
+    * type before
     */
-   public <T extends GpsdMessage> boolean removeHandler(Class<T> responseClass, Consumer<T> consumer)
+   public <T extends GpsdMessage> boolean removeHandler(Class<T> messageType, Consumer<T> handler)
    {
-      return this.handlers.getOrDefault(responseClass, emptyList()).remove(consumer);
+      return this.handlers.getOrDefault(messageType, emptyList()).remove(handler);
    }
 
    /**
-    * Remove the handler from all types of objects it was registered for.
+    * Removes the handler from all types of messages it was registered for.
     *
     * @param consumer the handler to remove
     *
-    * @return true if the handler has been removed, or false if was not registered before
+    * @return <tt>true</tt> if the handler was removed, or <tt>false</tt> if it has not been registered before
     */
    public <T extends GpsdMessage> boolean removeHandler(Consumer<T> consumer)
    {
