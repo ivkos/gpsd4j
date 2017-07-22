@@ -4,6 +4,24 @@
 
 **gpsd4j** is a Java library that allows you to communicate with a [gpsd server](http://www.catb.org/gpsd/).
 
+## Table of Contents
+* [Requirements](#requirements)
+* [Installation](#installation)
+	* [Maven](#maven)
+	* [Gradle](#gradle)
+* [Documentation](#documentation)
+* [Quick Start](#quick-start)
+	* [Creating a client](#creating-a-client)
+	* [Message handlers](#message-handlers)
+	* [Client lifecycle](#client-lifecycle)
+		* [Persisting device settings and watch mode](#persisting-device-settings-and-watch-mode)
+	* [Sending commands](#sending-commands)
+		* [Sending a command and expecting a response](#sending-a-command-and-expecting-a-response)
+		* [Sending a command and not awaiting a response](#sending-a-command-and-not-awaiting-a-response)
+	* [Putting it all together](#putting-it-all-together)
+
+
+
 ## Requirements
 * JRE 8 or higher at runtime
 * JDK 8 or higher to compile the library from source
