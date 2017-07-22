@@ -80,9 +80,9 @@ no matter if the client is running or not.
 
 ```java
 // Adds a handler that prints received gpsd errors to stderr
-client.addHandler(ErrorMessage.class, System.err::println);
+client.addErrorHandler(System.err::println);
 
-// Adds a handler that handles incoming TPV messages
+// Adds a message handler that handles incoming TPV messages
 client.addHandler(TPVReport.class, tpv -> {
     Double lat = tpv.getLatitude();
     Double lon = tpv.getLongitude();
@@ -130,6 +130,25 @@ client.watch();
 client.stop();
 ```
 
+#### Persisting device settings and watch mode
+Device settings and watch mode settings may be lost if the connection drops
+or the gpsd server restarts. In order to persist them, you can set a connection
+handler that gets executed upon each successful connection the gpsd server, including
+reconnections.
+```java
+new GpsdClient(...)
+    .setSuccessfulConnectionHandler(client -> {
+       DeviceMessage device = new DeviceMessage();
+       device.setPath("/dev/ttyAMA0");
+       device.setNative(true);
+
+       client.sendCommand(device);
+       client.watch();
+    })
+    .addHandler(TPVReport.class, tpv -> { ... })
+    .start();
+```
+
 
 ### Sending commands
 There are multiple ways of sending commands to the server. In order to send commands,
@@ -156,9 +175,8 @@ client.sendCommand(device);
 
 ### Putting it all together
 ```java
-GpsdClient client = new GpsdClient("localhost", 2947);
-
-client.addHandler(ErrorMessage.class, System.err::println)
+new GpsdClient("localhost", 2947)
+      .addErrorHandler(System.err::println)
       .addHandler(TPVReport.class, tpv -> {
           Double lat = tpv.getLatitude();
           Double lon = tpv.getLongitude();
@@ -168,6 +186,13 @@ client.addHandler(ErrorMessage.class, System.err::println)
       .addHandler(SKYReport.class, sky -> {
           System.out.printf("We can see %d satellites\n", sky.getSatellites().size())
       })
-      .start()
-      .watch(); // make the server start reporting messages
+      .setSuccessfulConnectionHandler(client -> {
+          DeviceMessage device = new DeviceMessage();
+          device.setPath("/dev/ttyAMA0");
+          device.setNative(true);
+
+          client.sendCommand(device);
+          client.watch();
+      })
+      .start();
 ```
