@@ -92,6 +92,10 @@ public class SerializationHelper
          throw new GpsdParseException("Could not parse JSON", e);
       }
 
+      if (obj.getMap() == null) {
+         throw new GpsdParseException("Could not parse JSON: %s", json);
+      }
+
       String className = obj.getString(JSON_CLASS_KEY);
       if (className == null) throw new GpsdParseException("Could not parse JSON: missing '%s' key in JSON: %s",
             JSON_CLASS_KEY, json);
