@@ -89,7 +89,7 @@ public class SerializationHelper
       try {
          obj = new JsonObject(json);
       } catch (DecodeException e) {
-         throw new GpsdParseException("Could not parse JSON", e);
+         throw new GpsdParseException(format("Could not parse JSON: %s", json), e);
       }
 
       if (obj.getMap() == null) {
@@ -107,7 +107,7 @@ public class SerializationHelper
       try {
          return Json.decodeValue(json, clazz);
       } catch (DecodeException e) {
-         throw new GpsdParseException("Could not parse JSON", e);
+         throw new GpsdParseException(format("Could not parse JSON: %s", json), e);
       }
    }
 
