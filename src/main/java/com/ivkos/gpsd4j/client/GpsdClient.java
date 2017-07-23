@@ -145,7 +145,7 @@ public class GpsdClient
       requireNonNull(command, "command must not be null");
 
       return this.sendCommand(format(
-            "?%s=%s",
+            "?%s=%s;\n",
             command.getGpsdClass(), serialize(command)
       ));
    }
