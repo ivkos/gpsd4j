@@ -43,7 +43,7 @@
 <dependency>
     <groupId>com.ivkos</groupId>
     <artifactId>gpsd4j</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
 </dependency>
 ```
 
@@ -61,12 +61,12 @@ allprojects {
 **Step 2.** Add the dependency:
 ```
 dependencies {
-    compile 'com.ivkos:gpsd4j:1.2.1'
+    compile 'com.ivkos:gpsd4j:1.2.2'
 }
 ```
 
 ## Documentation
-Javadocs can be found [here](https://jitpack.io/com/ivkos/gpsd4j/1.2.1/javadoc/).
+Javadocs can be found [here](https://jitpack.io/com/ivkos/gpsd4j/1.2.2/javadoc/).
 
 ## Quick Start
 > An example is worth a thousand pages of Javadocs.
@@ -104,7 +104,7 @@ client.addErrorHandler(System.err::println);
 client.addHandler(TPVReport.class, tpv -> {
     Double lat = tpv.getLatitude();
     Double lon = tpv.getLongitude();
-    
+
     System.out.printf("Lat: %f, Lon: %f\n", lat, lon);
 });
 
@@ -187,7 +187,7 @@ DeviceMessage device = new DeviceMessage();
 device.setPath("/dev/ttyAMA0");
 device.setNative(true);
 
-client.sendCommand(device); 
+client.sendCommand(device);
 ```
 
 
