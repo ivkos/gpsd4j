@@ -1,6 +1,8 @@
 # gpsd4j
 
 [![Release](https://jitpack.io/v/com.ivkos/gpsd4j.svg)](https://jitpack.io/#com.ivkos/gpsd4j)
+[![Downloads](https://jitpack.io/v/com.ivkos/gpsd4j/month.svg)](https://jitpack.io/#com.ivkos/gpsd4j)
+
 
 **gpsd4j** is a Java library that allows you to communicate with a [gpsd server](http://www.catb.org/gpsd/).
 
