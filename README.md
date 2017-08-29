@@ -45,7 +45,7 @@
 <dependency>
     <groupId>com.ivkos</groupId>
     <artifactId>gpsd4j</artifactId>
-    <version>1.3.0</version>
+    <version>1.3.1</version>
 </dependency>
 ```
 
@@ -63,12 +63,12 @@ allprojects {
 **Step 2.** Add the dependency:
 ```
 dependencies {
-    compile 'com.ivkos:gpsd4j:1.3.0'
+    compile 'com.ivkos:gpsd4j:1.3.1'
 }
 ```
 
 ## Documentation
-Javadocs can be found [here](https://jitpack.io/com/ivkos/gpsd4j/1.3.0/javadoc/).
+Javadocs can be found [here](https://jitpack.io/com/ivkos/gpsd4j/1.3.1/javadoc/).
 
 ## Quick Start
 > An example is worth a thousand pages of Javadocs.
